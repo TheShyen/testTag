@@ -5,11 +5,11 @@
     </button>
     <transition name="fade">
       <ul v-if="isOpen" class="dropdown-menu">
-        <li v-for="option.name in props.options" @click="handleOptionClick(option.name)">{{option.name}}</li>
+        <li v-for="option in props.options" @click="handleOptionClick(option.name)">{{option.name}}</li>
       </ul>
     </transition>
     <div class="arrow" :class="{ 'arrow-up': isOpen }"></div>
-    <button @click="selectValue='Выберите значение'" class="cross" v-if="selectValue != 'Выберите значение'">
+    <button @click="handleClearFilter" class="cross" v-if="selectValue != defaultFilterValue">
       <img src="../assets/cross.svg" style="height: 12px; width: 12px"/>
     </button>
   </div>
@@ -18,9 +18,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import {OptionType} from "../types/OptionType.ts";
+import {useStore} from "../stores/AppStore.ts";
+const store = useStore()
 const isOpen = ref(false);
 const dropdownMen = ref<Element | null>(null)
-const selectValue = ref('Выберите значение')
+const defaultFilterValue = 'Выберите значение'
+const selectValue = ref(defaultFilterValue)
 
 const props = defineProps<{
   options: OptionType[]
@@ -36,7 +39,11 @@ onUnmounted(() => {
 
 function handleOptionClick(option: string) {
   selectValue.value = option
-  
+  store.dispatch('sortProductsByPrice', {value: option})
+}
+function handleClearFilter() {
+  selectValue.value = defaultFilterValue
+  store.dispatch('getProducts')
 }
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
