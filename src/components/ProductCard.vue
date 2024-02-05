@@ -8,8 +8,8 @@
         <div class="product-description__code">{{props.product.code}}</div>
         <h3 class="product-description__name">{{props.product.name}}</h3>
         <div class="price">
-          <div class="price__old" v-if="props.product.price.old_price">{{roundNumber(props.product.price.old_price)}}₽</div>
-          <div class="price__current">{{roundNumber(props.product.price.current_price)}}₽</div>
+          <div class="price__old" v-if="props.product.price.old_price">{{priceFormatter(props.product.price.old_price)}}</div>
+          <div class="price__current">{{priceFormatter(props.product.price.current_price)}}</div>
         </div>
       </div>
       <div class="product-actions">
@@ -27,18 +27,20 @@
 
 <script setup lang="ts">
 import getImagePath from "../utils/getImagePath.ts";
-import roundNumber from "../utils/roundNumber.ts";
+import {ProductType} from "../types/ProductType.ts";
+import {priceFormatter} from "../utils/priceFormatter.ts";
 
 const props = defineProps<{
   product: ProductType
 }>()
+
 </script>
 
 <style scoped lang="sass">
 .product-card
   width: 320px
   height: 380px
-  border: 1px solid rgba(238, 238, 238, 1)
+  border: 1px solid #EEEEEE
   display: flex
   flex-direction: column
   justify-content: space-between
@@ -77,7 +79,7 @@ const props = defineProps<{
   flex-wrap: wrap
   align-content: flex-end
   &__button
-    background-color: rgba(255,255,255,0.0)
+    background-color: #ffffff
     border: none
     cursor: pointer
 </style>

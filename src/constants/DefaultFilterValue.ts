@@ -1,1 +1,1 @@
-export const
+export const defaultFilterValue = 'Выберите значение';
