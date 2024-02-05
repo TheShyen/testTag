@@ -1,6 +1,6 @@
 import products from '../data/items.json'
 import {InjectionKey} from 'vue'
-import {createStore, useStore as baseUseStore, Store, ActionContext} from 'vuex'
+import {createStore, useStore as baseUseStore, Store} from 'vuex'
 import {ProductType} from "../types/ProductType.ts";
 import {PriceSortOption} from "../constants/PriceSortOption.ts";
 export interface State {
@@ -30,7 +30,7 @@ export const store = createStore({
 
     },
     actions: {
-        getProducts({commit}: ActionContext<'setProducts'>) {
+        getProducts({commit}) {
             try {
                 const data: ProductType[] = JSON.parse(JSON.stringify(products))
                 commit('setProducts', data);
@@ -39,10 +39,10 @@ export const store = createStore({
                 console.error('Error fetching data:', error.message);
             }
         },
-        sortProductsByPrice({commit}: ActionContext<'filterProductsByPrice', string>,sort: {value: string}) {
+        sortProductsByPrice({commit},sort: {value: string}) {
             commit('filterProductsByPrice', sort.value);
         },
-        filterProductsByMaterial({commit}: ActionContext<'filterProductsByMaterial', string>, sort: {value: string}) {
+        filterProductsByMaterial({commit}, sort: {value: string}) {
             commit('filterProductsByMaterial', sort.value)
         }
     }
