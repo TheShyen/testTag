@@ -63,11 +63,17 @@ onMounted(() => {
 
 function filterByPrice(option: string) {
   priceFilterValue.value = (PriceOptionsArray.find(elem => elem.id == option) || {name: defaultFilterValue}).name
+  if(materialFilterValue.value == defaultFilterValue) {
+    store.dispatch('getProducts')
+  }
   store.dispatch('sortProductsByPrice', {value: option})
 }
 
 function filterByMaterial(option: string) {
   materialFilterValue.value = (MaterialsFilterOptions.find(elem => elem.id == option) || {name: defaultFilterValue}).name
+  if(priceFilterValue.value == defaultFilterValue) {
+    store.dispatch('getProducts')
+  }
   store.dispatch('filterProductsByMaterial', {value: option})
 }
 
@@ -96,7 +102,7 @@ function clearMaterialFilter() {
 
 <style scoped lang="sass">
 .page-container
-  width: 1400px
+  max-width: 1400px
   margin: 0 auto
 .page-name
   font-family: 'SF Pro Display', sans-serif
@@ -123,4 +129,14 @@ function clearMaterialFilter() {
   display: flex
   flex-wrap: wrap
   align-content: flex-end
+  z-index: -9999
+
+@media (max-width: 575px)
+  .filters
+    flex-wrap: wrap
+  .cart-favorites-container
+    top: 30px
+@media (max-width: 768px)
+  .cart-favorites-container
+    top: 30px
 </style>
