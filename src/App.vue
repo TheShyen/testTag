@@ -65,6 +65,10 @@ function filterByPrice(option: string) {
   priceFilterValue.value = (PriceOptionsArray.find(elem => elem.id == option) || {name: defaultFilterValue}).name
   if(materialFilterValue.value == defaultFilterValue) {
     store.dispatch('getProducts')
+  } else {
+    const id = (MaterialsFilterOptions.find(elem => elem.name == materialFilterValue.value) || {id: 0}).id
+    store.dispatch('getProducts')
+    store.dispatch('filterProductsByMaterial', {value: id})
   }
   store.dispatch('sortProductsByPrice', {value: option})
 }
@@ -73,6 +77,10 @@ function filterByMaterial(option: string) {
   materialFilterValue.value = (MaterialsFilterOptions.find(elem => elem.id == option) || {name: defaultFilterValue}).name
   if(priceFilterValue.value == defaultFilterValue) {
     store.dispatch('getProducts')
+  } else {
+    const id = (PriceOptionsArray.find(elem => elem.name == priceFilterValue.value) || {id: 0}).id
+    store.dispatch('getProducts')
+    store.dispatch('sortProductsByPrice', {value: id})
   }
   store.dispatch('filterProductsByMaterial', {value: option})
 }
