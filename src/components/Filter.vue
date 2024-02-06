@@ -51,7 +51,7 @@ function closeDropdown() {
   isOpen.value = false;
 }
 
-function handleClickOutside (event) {
+function handleClickOutside (event: Event) {
   if(event.target !== selectElementRef.value) {
     closeDropdown()
   }

@@ -4,14 +4,18 @@ import {createStore, useStore as baseUseStore, Store} from 'vuex'
 import {ProductType} from "../types/ProductType.ts";
 import {PriceSortOption} from "../constants/PriceSortOption.ts";
 export interface State {
-    products: ProductType[]
+  products: ProductType[];
+  shopCart: ProductType[];
+  favorite: ProductType[]
 }
 
 export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore({
     state: <State>{
-        products: []
+      products: [],
+      shopCart: [],
+      favorite: []
     },
     mutations: {
         setProducts(state: State, data: ProductType[]) {
@@ -26,7 +30,21 @@ export const store = createStore({
         },
         filterProductsByMaterial(state: State, data: string) {
             state.products = state.products.filter((elem)=> elem.material == +data)
+        },
+      addProductToShopCart(state: State, data: ProductType) {
+        state.shopCart.push(data)
+        console.log(state.shopCart)
+        localStorage.setItem('shopCart', JSON.stringify(state.shopCart))
+      },
+      addProductToFavorite(state: State, data: ProductType) {
+        if (state.favorite.includes(data)) {
+        } else {
+          state.favorite.push(data)
+          console.log(state.favorite)
+          localStorage.setItem('favorite', JSON.stringify(state.favorite))
         }
+
+      }
 
     },
     actions: {
@@ -44,6 +62,12 @@ export const store = createStore({
         },
         filterProductsByMaterial({commit}, sort: {value: string}) {
             commit('filterProductsByMaterial', sort.value)
+        },
+      addProductToShopCart({commit}, product: ProductType) {
+        commit('addProductToShopCart', product)
+      },
+      addProductToFavorite({commit}, product: ProductType) {
+        commit('addProductToFavorite', product)
         }
     }
 })

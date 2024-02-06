@@ -1,6 +1,7 @@
 <template>
   <div class="product-card">
     <div class="image">
+      <div class="discount" v-if="!!props.product.price.old_price">Скидка</div>
       <img :src="getImagePath(props.product.image.url)" alt="Product 1" class="product-card__img">
     </div>
     <div class="product-info">
@@ -13,10 +14,11 @@
         </div>
       </div>
       <div class="product-actions">
-        <button class="product-actions__button">
-          <img src="../assets/cart.svg"/>
+        <button class="product-actions__button" @click="handleShopCartClick">
+          <img src="../assets/cart.svg" v-if="!isAddedToShopCart"/>
+          <img src="../assets/cart-checked.svg" v-else/>
         </button>
-        <button class="product-actions__button">
+        <button class="product-actions__button" @click="store.dispatch('addProductToFavorite', props.product)">
           <img src="../assets/heart.svg"/>
         </button>
       </div>
@@ -29,10 +31,26 @@
 import getImagePath from "../utils/getImagePath.ts";
 import {ProductType} from "../types/ProductType.ts";
 import {priceFormatter} from "../utils/priceFormatter.ts";
+import {useStore} from "../stores/AppStore.ts";
+import {onMounted, ref} from "vue";
 
+const store = useStore()
+const isAddedToShopCart = ref(false)
 const props = defineProps<{
   product: ProductType
 }>()
+
+onMounted(() => {
+  if(!!store.state.shopCart.find(item => item.id == props.product.id)) {
+    isAddedToShopCart.value = true
+  }
+})
+
+
+function handleShopCartClick() {
+  store.dispatch('addProductToShopCart', props.product)
+  isAddedToShopCart.value = true
+}
 
 </script>
 
@@ -82,4 +100,14 @@ const props = defineProps<{
     background-color: #ffffff
     border: none
     cursor: pointer
+    
+.discount
+  background-color: #EB5757
+  height: 24px
+  padding: 6px 16px 1px 16px
+  color: #FFFFFF
+  font-family: 'SF Pro Display', sans-serif
+  font-weight: 500
+  font-size: 14px
+  margin-top: 10px
 </style>

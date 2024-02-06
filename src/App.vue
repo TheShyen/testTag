@@ -1,11 +1,33 @@
 <template>
   <main>
     <div class="page-container">
-      <Navigation/>
-      <h1 class="page-name">Комплекты стеллажных систем</h1>
+      <header>
+        <Navigation :routes="routes"/>
+        <h1 class="page-name">Комплекты стеллажных систем</h1>
+      </header>
+      <div class="cart-favorites-container">
+        <CartElem/>
+        <FavoriteElem/>
+      </div>
       <section class="filters">
-        <Filter :options="PriceOptionsArray" v-model="priceFilterValue" @on-select-option="filterByPrice" @on-clear-value="clearPriceFilter"/>
-        <Filter :options="MaterialsFilterOptions" v-model="materialFilterValue" @on-select-option="filterByMaterial" @on-clear-value="clearMaterialFilter"/>
+        <div>
+          <div class="filters__label">Сортировать по:</div>
+          <Filter
+            :options="PriceOptionsArray"
+            v-model="priceFilterValue"
+            @on-select-option="filterByPrice"
+            @on-clear-value="clearPriceFilter"
+          />
+        </div>
+        <div>
+          <div class="filters__label">Материал:</div>
+          <Filter
+            :options="MaterialsFilterOptions"
+            v-model="materialFilterValue"
+            @on-select-option="filterByMaterial"
+            @on-clear-value="clearMaterialFilter"
+          />
+        </div>
       </section>
       <section class="products">
         <ProductCard v-for="product in store.state.products" :product="product" :key="product.id"/>
@@ -23,16 +45,21 @@ import {useStore} from "./stores/AppStore.ts";
 import {PriceOptionsArray} from "./constants/PriceSortOption.ts";
 import {MaterialsFilterOptions} from "./constants/MaterialsFilterOption.ts";
 import {defaultFilterValue} from "./constants/DefaultFilterValue.ts";
+import CartElem from "./components/CartElem.vue";
+import FavoriteElem from "./components/FavoriteElem.vue";
 
 
 const store = useStore()
-
+const routes = ['Главная', 'Система хранения', 'Комплекты стелажных систем']
 const priceFilterValue = ref(defaultFilterValue)
 const materialFilterValue = ref(defaultFilterValue)
 
 onMounted(() => {
   store.dispatch('getProducts')
+  store.state.shopCart = JSON.parse(localStorage.getItem('shopCart') || '[]')
+  store.state.favorite = JSON.parse(localStorage.getItem('favorite') || '[]')
 })
+
 
 function filterByPrice(option: string) {
   priceFilterValue.value = (PriceOptionsArray.find(elem => elem.id == option) || {name: defaultFilterValue}).name
@@ -77,10 +104,23 @@ function clearMaterialFilter() {
   max-width: 500px
   display: flex
   justify-content: space-between
+  &__label
+    font-family: 'SF Pro Display', sans-serif
+    font-size: 12px
+    color: #4F4F4F
+    padding: 6px 10px
 .products
   display: flex
   flex-wrap: wrap
   gap: 20px 0px
   margin-top: 40px
   justify-content: space-around
+  
+.cart-favorites-container
+  position: absolute
+  top: 20px
+  right: 40px
+  display: flex
+  flex-wrap: wrap
+  align-content: flex-end
 </style>
