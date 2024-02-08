@@ -84,6 +84,7 @@ function handleClickOutside (event: Event) {
     padding: 0
     background-color: #fff
     width: 100%
+    z-index: 9999
 li
   padding: 10px
   border-bottom: 1px solid #eee
